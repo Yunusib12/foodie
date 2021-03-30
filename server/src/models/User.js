@@ -24,9 +24,13 @@ const UserSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    photoURL: {
+        type: String,
+        default: "assets/images/avatar-placeholder.png"
+    },
     likedRestaurant: [
         {
-            type: Number,
+            type: Schema.Types.ObjectId,
             ref: "Restaurant"
         }
     ]

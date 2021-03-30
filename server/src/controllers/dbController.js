@@ -10,101 +10,67 @@ const dbController = {
         const userInfo = req.body;
 
         //add the user information in the db
-        db.User.create(userInfo, (err, data) => {
-            if (err)
-                res.status(500).send(err)
-            else
-                res.json(data);
-        });
+        db.User.create(userInfo)
+            .then((dbUser) => res.send(dbUser))
+            .catch((error) => res.status(500).send(error));
     },
-    getAllUser: (req, res) => {
+    users: (req, res) => {
 
         // retrieve all the the users available in the database
-        db.User.find((err, data) => {
-            if (err)
-                res.status(500).send(err)
-            else
-                res.json(data);
-        });
+        db.User.find({})
+            .populate("restaurants")
+            .then((dbUser) => res.send(dbUser))
+            .catch((error) => res.status(500).send(error));
     },
-    getUser: (req, res) => {
+    user: (req, res) => {
 
         const userId = req.params.id;
 
         // get a specific user information 
-        db.User.findOne({ userId: userId }, (err, data) => {
-            if (err)
-                res.status(500).send(err)
-            else
-                res.json(data);
-        });
-    },
-    saveUserLikedRestaurant: (req, res) => {
-
-        // Checking the query param before proceding with the update and saving them in an array
-        const keys = [];
-
-        for (const key in req.query) {
-            keys.push(key);
-        }
-
-        if (keys.includes("userId") && keys.includes("restaurantId")) {
-
-            const { userId, restaurantId } = req.query;
-
-            const update = {
-                $push: {
-                    likedRestaurant: restaurantId
-                }
-            };
-
-            // add or update the user information on the restaurant that the user liked
-            db.User.findOneAndUpdate({ userId: userId }, update, { new: true }, (err, data) => {
-                if (err)
-                    res.status(500).send(err)
-                else
-                    res.json(data);
-            })
-
-        } else {
-            res.status(500).send({
-                errorMessage: "The query params used are not allowed on this route"
-            })
-        }
+        db.User.find({ userId: userId })
+            .populate("restaurants")
+            .then((dbUser) => res.send(dbUser))
+            .catch((error) => res.status(500).send(error));
     },
     addRestaurant: (req, res) => {
 
-        const restaurantInfo = req.body;
+        // retrieve the userId 
+        const googleUserId = JSON.parse(JSON.stringify(req.body.userId));
+        const restaurantId = req.body.restaurantId;
+        const restaurants = req.body;
 
-        //add the restaurant information in the db
-        db.Restaurant.create(restaurantInfo, (err, data) => {
-            if (err)
-                res.status(500).send(err)
-            else
-                res.json(data);
-        });
+        delete restaurants.userId;
+
+        // Check if the restaurant is already saved
+        db.Restaurant.findOne({ restaurantId: restaurantId })
+            .then((restaurantFound) => {
+
+                if (!restaurantFound) {
+                    // add the restaurant information in the database
+                    db.Restaurant.create(restaurants)
+                        .then((restaurantSaved) => res.send(restaurantSaved))
+                        .catch((error) => res.status(500).send(error));
+                }
+            })
+            .catch((error) => res.status(500).send(error));
     },
-    getAllSavedRestaurant: (req, res) => {
+    restaurants: (req, res) => {
 
         // retrieve all Saved restaurant by user in the database
-        db.Restaurant.find((err, data) => {
-            if (err)
-                res.status(500).send(err)
-            else
-                res.json(data);
-        });
+        db.Restaurant.find({})
+            .populate("users")
+            .then((dbRestaurants) => res.send(dbRestaurants))
+            .catch((error) => res.status(500).send(error));
     },
-    getRestaurant: (req, res) => {
+    restaurant: (req, res) => {
 
         const restaurantId = req.params.id;
 
-        // retrieve all Saved restaurant by user in the database
-        db.Restaurant.findOne({ restaurantId: restaurantId }, (err, data) => {
-            if (err)
-                res.status(500).send(err)
-            else
-                res.json(data);
-        });
+        // retrieve information on a saved restaurant
+        db.Restaurant.find({ restaurantId: restaurantId })
+            .populate("users")
+            .then((dbRestaurant) => res.send(dbRestaurant))
+            .catch((error) => res.status(500).send(error));
     }
 };
 

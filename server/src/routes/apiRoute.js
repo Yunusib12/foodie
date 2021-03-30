@@ -8,35 +8,29 @@ routes
 
 // Get All users
 routes
-    .route("/getusers")
-    .get(dbController.getAllUser);
+    .route("/users")
+    .get(dbController.users);
 
 // Get a specific user information
 routes
-    .route("/getuser/:id")
-    .get(dbController.getUser);
-
-
-routes
-    .route("/saverestaurant")
-    .put(dbController.saveUserLikedRestaurant);
-
+    .route("/user/:id")
+    .get(dbController.user);
 
 // Add a restaurant
 routes
     .route("/addrestaurant")
-    .get(dbController.addRestaurant);
+    .post(dbController.addRestaurant);
 
 // Gett all the saved restaurant(s)
 routes
-    .route("/getrestaurants")
-    .get(dbController.getAllSavedRestaurant);
+    .route("/restaurants")
+    .get(dbController.restaurants);
 
 
-// Add a specific restaurant
+// Get a specific restaurant
 routes
-    .route("/getrestaurant/:id")
-    .get(dbController.getRestaurant);
+    .route("/restaurant/:id")
+    .get(dbController.restaurant);
 
 
 module.exports = routes;
