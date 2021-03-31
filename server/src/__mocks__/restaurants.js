@@ -50984,4 +50984,4 @@ const offlineRestaurantData = [
     }
 ];
 
-export { offlineRestaurantData };
+module.exports = offlineRestaurantData;

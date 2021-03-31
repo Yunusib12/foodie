@@ -20,7 +20,7 @@ const RestaurantSchema = new Schema({
     zipCode: { type: String, required: true },
     latitude: { type: String },
     longitude: { type: String },
-    likedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    // likedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
     savedAt: { type: Date, default: Date.now }
 });
 
