@@ -7,8 +7,7 @@ const { Schema, model } = mongoose;
 const UserSchema = new Schema({
     userId: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     displayName: {
         type: String,
@@ -20,20 +19,20 @@ const UserSchema = new Schema({
         required: true,
         match: [/.+@.+\..+/, "Please enter a valid e-mail address"]
     },
-    userCreated: {
-        type: Date,
-        default: Date.now
-    },
     photoURL: {
         type: String,
         default: "assets/images/avatar-placeholder.png"
     },
-    likedRestaurant: [
+    restaurants: [
         {
             type: Schema.Types.ObjectId,
             ref: "Restaurant"
         }
-    ]
+    ],
+    userCreated: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 module.exports = model("User", UserSchema);

@@ -21,7 +21,7 @@ const dbController = {
         // retrieve all the the users available in the database
         db.User
             .find({})
-            .populate("restaurants")
+            .populate("restaurants", "-__v")
             .then((dbUser) => res.send(dbUser))
             .catch((error) => res.status(500).send(error));
     },
@@ -32,7 +32,7 @@ const dbController = {
         // get a specific user information 
         db.User
             .find({ userId: userId })
-            .populate("restaurants")
+            .populate("restaurants", "-__v")
             .then((dbUser) => res.send(dbUser))
             .catch((error) => res.status(500).send(error));
     },
@@ -59,22 +59,54 @@ const dbController = {
     addRestaurant: (req, res) => {
 
         // retrieve the userId 
+        const userId = req.body.userId;
         const restaurantId = req.body.restaurantId;
-        const restaurants = req.body;
+        const restaurantInfo = req.body;
 
-        delete restaurants.userId;
+
+        delete restaurantInfo.userId;
 
         // Check if the restaurant is already saved
         db.Restaurant
             .findOne({ restaurantId: restaurantId })
             .then((restaurantFound) => {
-
+                console.log(`userId`, userId)
                 if (!restaurantFound) {
-                    // add the restaurant information in the database
+                    // Add restaurant information into the database
                     db.Restaurant
-                        .create(restaurants)
-                        .then((restaurantSaved) => res.send(restaurantSaved))
+                        .create(restaurantInfo)
+                        .then((restaurantSaved) => {
+
+                            const restaurantDBId = restaurantSaved._id;
+
+                            // Add the restaurant information into user restaurant list then User's to Restaurant
+                            const results = functions.addRestToUserAndUserToRest(restaurantDBId, userId, res);
+
+                            results.then((resultRestaurantSaved) => res.send(resultRestaurantSaved));
+                        })
                         .catch((error) => res.status(500).send(error));
+                } else {
+
+                    // Check if the USER already SAVED the restaurant
+                    db.User
+                        .findOneAndUpdate({ userId: userId })
+                        .then((userFound) => {
+
+                            const savedRestaurantId = restaurantFound._id;
+                            const isRestaurantSavedByUser = userFound.restaurants.includes(savedRestaurantId);
+
+                            if (!isRestaurantSavedByUser) {
+
+                                // Add the restaurant information into user restaurant list then User's to Restaurant
+                                const results = functions.addRestToUserAndUserToRest(savedRestaurantId, userId, res);
+
+                                results.then((resultRestaurantSaved) => res.send(resultRestaurantSaved));
+
+                            } else {
+                                console.log(`userId`, userId)
+                                res.status(500).send({ errorMessage: "You already saved the restaurant!" });
+                            }
+                        })
                 }
             })
             .catch((error) => res.status(500).send(error));
@@ -84,7 +116,7 @@ const dbController = {
         // retrieve all Saved restaurant by user in the database
         db.Restaurant
             .find({})
-            // .populate("users")
+            .populate("users")
             .then((dbRestaurants) => res.send(dbRestaurants))
             .catch((error) => res.status(500).send(error));
     },
@@ -95,7 +127,7 @@ const dbController = {
         // retrieve information on a saved restaurant
         db.Restaurant
             .find({ restaurantId: restaurantId })
-            // .populate("users")
+            .populate("users")
             .then((dbRestaurant) => res.send(dbRestaurant))
             .catch((error) => res.status(500).send(error));
     },
