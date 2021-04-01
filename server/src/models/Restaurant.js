@@ -5,7 +5,7 @@ const { Schema, model } = mongoose;
 
 // create the UserSchema
 const RestaurantSchema = new Schema({
-    restaurantId: { type: String, required: true, unique: true },
+    restaurantId: { type: String, required: true },
     businessName: { type: String },
     dbaName: { type: String },
     licStatus: { type: String },
@@ -13,7 +13,7 @@ const RestaurantSchema = new Schema({
     licenceAddDateTime: { type: String },
     description: { type: String },
     dayPhone: { type: String },
-    propertyID: { type: String, unique: true },
+    propertyID: { type: String },
     address: { type: String },
     city: { type: String, required: true },
     state: { type: String, required: true },

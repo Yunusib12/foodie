@@ -26,10 +26,9 @@ const functions = {
         });
     },
     addRestToUserAndUserToRest: (restaurantId, userId, res) => {
-
         // update Restaurant information into User list of restaurants
         return db.User
-            .findOneAndUpdate(
+            .updateOne(
                 userId,
                 {
                     $push: {
@@ -42,10 +41,9 @@ const functions = {
                 }
             )
             .then((userFoundAndUpdated) => {
-
                 //update the restaurant with the user information
                 return db.Restaurant
-                    .findOneAndUpdate({
+                    .updateOne({
                         _id: restaurantId
                     },
                         {

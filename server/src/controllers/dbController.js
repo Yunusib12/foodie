@@ -21,7 +21,7 @@ const dbController = {
         // retrieve all the the users available in the database
         db.User
             .find({})
-            .populate("restaurants", "-__v")
+            .populate("restaurants", "-__v -users")
             .then((dbUser) => res.send(dbUser))
             .catch((error) => res.status(500).send(error));
     },
@@ -63,14 +63,13 @@ const dbController = {
         const restaurantId = req.body.restaurantId;
         const restaurantInfo = req.body;
 
-
         delete restaurantInfo.userId;
 
         // Check if the restaurant is already saved
         db.Restaurant
             .findOne({ restaurantId: restaurantId })
             .then((restaurantFound) => {
-                console.log(`userId`, userId)
+
                 if (!restaurantFound) {
                     // Add restaurant information into the database
                     db.Restaurant
@@ -86,24 +85,39 @@ const dbController = {
                         })
                         .catch((error) => res.status(500).send(error));
                 } else {
-
                     // Check if the USER already SAVED the restaurant
                     db.User
-                        .findOneAndUpdate({ userId: userId })
+                        .findOne({ userId: userId })
                         .then((userFound) => {
 
                             const savedRestaurantId = restaurantFound._id;
-                            const isRestaurantSavedByUser = userFound.restaurants.includes(savedRestaurantId);
+                            const userDBId = userFound._id;
+                            const savedRestaurantsByUser = userFound.restaurants;
+                            const isRestaurantSavedByUser = savedRestaurantsByUser.indexOf(savedRestaurantId) !== -1;
 
                             if (!isRestaurantSavedByUser) {
 
-                                // Add the restaurant information into user restaurant list then User's to Restaurant
-                                const results = functions.addRestToUserAndUserToRest(savedRestaurantId, userId, res);
+                                // Add the restaurant information into user restaurant saved list 
+                                db.User
+                                    .updateOne(
+                                        { _id: userDBId },
+                                        { $push: { restaurants: savedRestaurantId } },
+                                        { new: true, useFindAndModify: false })
+                                    .then((userUpdated) => {
 
-                                results.then((resultRestaurantSaved) => res.send(resultRestaurantSaved));
+                                        //update the restaurant with the user information
+                                        db.Restaurant
+                                            .updateOne(
+                                                { _id: savedRestaurantId },
+                                                { $push: { users: userDBId } },
+                                                { new: true, useFindAndModify: false }
+                                            )
+                                            .then((restaurantUpdated) => res.send({ restaurantUpdated, userUpdated }))
+                                            .catch((error) => res.status(500).send(error));
+                                    })
+                                    .catch((error) => res.status(500).send(error));
 
                             } else {
-                                console.log(`userId`, userId)
                                 res.status(500).send({ errorMessage: "You already saved the restaurant!" });
                             }
                         })
