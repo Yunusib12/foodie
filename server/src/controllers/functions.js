@@ -25,41 +25,70 @@ const functions = {
             return (businessName || licStatus || licenceCat || licenceAddDateTime || description || dayPhone || propertyID || address || city || state || zipCode || latitude || longitude);
         });
     },
-    addRestToUserAndUserToRest: (restaurantId, userId, res) => {
+    addRestToUserAndUserToRest: (savedRestaurantId, userDBId, res) => {
         // update Restaurant information into User list of restaurants
+
         return db.User
             .updateOne(
-                userId,
-                {
-                    $push: {
-                        restaurants: restaurantId
-                    }
-                },
-                {
-                    new: true,
-                    useFindAndModify: false
-                }
-            )
-            .then((userFoundAndUpdated) => {
+                { _id: userDBId },
+                { $push: { restaurants: savedRestaurantId } },
+                { new: true, useFindAndModify: false })
+            .then((userUpdated) => {
+
                 //update the restaurant with the user information
                 return db.Restaurant
-                    .updateOne({
-                        _id: restaurantId
-                    },
-                        {
-                            $push: {
-                                users: userFoundAndUpdated._id
-                            }
-                        },
-                        {
-                            new: true,
-                            useFindAndModify: false
-                        }
+                    .updateOne(
+                        { _id: savedRestaurantId },
+                        { $push: { users: userDBId } },
+                        { new: true, useFindAndModify: false }
                     )
-                    .then((restaurantFoundAndUpdated) => restaurantFoundAndUpdated)
+                    .then((restaurantUpdated) => res.send({ restaurantUpdated, userUpdated }))
                     .catch((error) => res.status(500).send(error));
             })
             .catch((error) => res.status(500).send(error));
+
+
+
+
+
+
+
+
+
+
+        // return db.User
+        //     .updateOne(
+        //         userId,
+        //         {
+        //             $push: {
+        //                 restaurants: restaurantId
+        //             }
+        //         },
+        //         {
+        //             new: true,
+        //             useFindAndModify: false
+        //         }
+        //     )
+        //     .then((userFoundAndUpdated) => {
+        //         //update the restaurant with the user information
+        //         return db.Restaurant
+        //             .updateOne({
+        //                 _id: restaurantId
+        //             },
+        //                 {
+        //                     $push: {
+        //                         users: userFoundAndUpdated._id
+        //                     }
+        //                 },
+        //                 {
+        //                     new: true,
+        //                     useFindAndModify: false
+        //                 }
+        //             )
+        //             .then((restaurantFoundAndUpdated) => restaurantFoundAndUpdated)
+        //             .catch((error) => res.status(500).send(error));
+        //     })
+        //     .catch((error) => res.status(500).send(error));
 
     }
 };

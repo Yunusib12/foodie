@@ -47,14 +47,44 @@ const dbController = {
             .catch((error) => res.status(500).send(error));
     },
     deleteUser: (req, res) => {
-
+        // find the user information
         const userId = req.params.id;
 
-        // delete a specific user information 
         db.User
-            .deleteOne({ userId: userId })
-            .then((dbUser) => res.send(dbUser))
-            .catch((error) => res.status(500).send(error));
+            .findOne({ userId })
+            .then((userFound) => {
+
+                const userDBId = userFound._id;
+
+                // check all the student reference's in restaurants 
+                db.Restaurant
+                    .find({
+                        users: { $in: [userDBId] }
+                    })
+                    .then((restaurants) => {
+                        restaurants.map((restaurant) => {
+
+                            const restaurantId = restaurant._id;
+
+                            // remove all the user's reference from each restaurant that the user saved
+                            db.Restaurant.findOneAndUpdate(
+                                { _id: restaurantId },
+                                { $pull: { users: userDBId } },
+                                { new: true }
+                            )
+                                .then((userDeleted) => {
+
+                                    // delete the user 
+                                    db.User
+                                        .deleteOne({ _id: userDBId })
+                                        .then((dbUser) => res.send({ dbUser, userDeleted }))
+                                        .catch((error) => res.status(500).send(error));
+                                })
+                                .catch((error) => res.status(500).send(error));
+                        })
+                    })
+                    .catch((error) => res.status(500).send(error));
+            })
     },
     addRestaurant: (req, res) => {
 
@@ -78,10 +108,17 @@ const dbController = {
 
                             const restaurantDBId = restaurantSaved._id;
 
-                            // Add the restaurant information into user restaurant list then User's to Restaurant
-                            const results = functions.addRestToUserAndUserToRest(restaurantDBId, userId, res);
+                            // getting user information 
+                            db.User
+                                .findOne({ userId: userId })
+                                .then((userFound) => {
 
-                            results.then((resultRestaurantSaved) => res.send(resultRestaurantSaved));
+                                    const userDBId = userFound._id;
+                                    const results = functions.addRestToUserAndUserToRest(restaurantDBId, userDBId, res);
+
+                                    results.then((resultRestaurantSaved) => res.send(resultRestaurantSaved));
+                                })
+                                .catch((error) => res.status(500).send({ error, errorMessage: `You need an account to be able to save a resaurant. Register / Login ` }));
                         })
                         .catch((error) => res.status(500).send(error));
                 } else {
@@ -118,9 +155,11 @@ const dbController = {
                                     .catch((error) => res.status(500).send(error));
 
                             } else {
+
                                 res.status(500).send({ errorMessage: "You already saved the restaurant!" });
                             }
                         })
+                        .catch((error) => res.status(500).send({ error, errorMessage: `You need an account to be able to save a resaurant. Register / Login ` }));
                 }
             })
             .catch((error) => res.status(500).send(error));
