@@ -72,16 +72,15 @@ const dbController = {
                                 { $pull: { users: userDBId } },
                                 { new: true }
                             )
-                                .then((userDeleted) => {
-
-                                    // delete the user 
-                                    db.User
-                                        .deleteOne({ _id: userDBId })
-                                        .then((dbUser) => res.send({ dbUser, userDeleted }))
-                                        .catch((error) => res.status(500).send(error));
-                                })
-                                .catch((error) => res.status(500).send(error));
                         })
+                    })
+                    .then(() => {
+
+                        // delete the user 
+                        db.User
+                            .deleteOne({ _id: userDBId })
+                            .then((dbUser) => res.send({ message: dbUser }))
+                            .catch((error) => res.status(500).send(error));
                     })
                     .catch((error) => res.status(500).send({ error, errorMessage: `Restaurant not found, Register / Login to save it! ` }));
             })
@@ -193,16 +192,16 @@ const dbController = {
                                     { $pull: { restaurants: restaurantDBId } },
                                     { new: true }
                                 )
-                                .then((restaurantDeleted) => {
-
-                                    // delete a saved restaurant
-                                    db.Restaurant
-                                        .deleteOne({ _id: restaurantDBId })
-                                        .then((dbRestaurant) => res.send({ restaurant: dbRestaurant, users: restaurantDeleted }))
-                                        .catch((error) => res.status(500).send(error));
-                                })
                                 .catch((error) => res.status(500).send(error));
                         })
+                    })
+                    .then(() => {
+
+                        // delete a saved restaurant
+                        db.Restaurant
+                            .deleteOne({ _id: restaurantDBId })
+                            .then((dbRestaurant) => res.send({ message: dbRestaurant }))
+                            .catch((error) => res.status(500).send(error));
                     })
                     .catch((error) => res.status(500).send(error));
 
