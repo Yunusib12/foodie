@@ -83,8 +83,9 @@ const dbController = {
                                 .catch((error) => res.status(500).send(error));
                         })
                     })
-                    .catch((error) => res.status(500).send(error));
+                    .catch((error) => res.status(500).send({ error, errorMessage: `Restaurant not found, Register / Login to save it! ` }));
             })
+            .catch((error) => res.status(500).send({ error, errorMessage: `User not found, Register / Login ` }));
     },
     addRestaurant: (req, res) => {
 
@@ -114,9 +115,7 @@ const dbController = {
                                 .then((userFound) => {
 
                                     const userDBId = userFound._id;
-                                    const results = functions.addRestToUserAndUserToRest(restaurantDBId, userDBId, res);
-
-                                    results.then((resultRestaurantSaved) => res.send(resultRestaurantSaved));
+                                    functions.addRestToUserAndUserToRest(restaurantDBId, userDBId, res);
                                 })
                                 .catch((error) => res.status(500).send({ error, errorMessage: `You need an account to be able to save a resaurant. Register / Login ` }));
                         })
@@ -134,25 +133,8 @@ const dbController = {
 
                             if (!isRestaurantSavedByUser) {
 
-                                // Add the restaurant information into user restaurant saved list 
-                                db.User
-                                    .updateOne(
-                                        { _id: userDBId },
-                                        { $push: { restaurants: savedRestaurantId } },
-                                        { new: true, useFindAndModify: false })
-                                    .then((userUpdated) => {
-
-                                        //update the restaurant with the user information
-                                        db.Restaurant
-                                            .updateOne(
-                                                { _id: savedRestaurantId },
-                                                { $push: { users: userDBId } },
-                                                { new: true, useFindAndModify: false }
-                                            )
-                                            .then((restaurantUpdated) => res.send({ restaurantUpdated, userUpdated }))
-                                            .catch((error) => res.status(500).send(error));
-                                    })
-                                    .catch((error) => res.status(500).send(error));
+                                // Add the restaurant information into user restaurant saved list
+                                functions.addRestToUserAndUserToRest(savedRestaurantId, userDBId, res);
 
                             } else {
 
@@ -188,11 +170,44 @@ const dbController = {
 
         const restaurantId = req.params.id;
 
-        // delete a saved restaurant
         db.Restaurant
-            .deleteOne({ restaurantId: restaurantId })
-            .then((dbRestaurant) => res.send(dbRestaurant))
-            .catch((error) => res.status(500).send(error));
+            .findOne({ restaurantId })
+            .then((restaurantFound) => {
+
+                const restaurantDBId = restaurantFound._id;
+
+                // check all the user that saved the restaurant 
+                db.User
+                    .find({
+                        restaurants: { $in: [restaurantDBId] }
+                    })
+                    .then((restaurants) => {
+                        restaurants.map((restaurant) => {
+
+                            const userDBId = restaurant._id;
+
+                            // remove all the restaurant's reference from each user that saved it
+                            db.User
+                                .findOneAndUpdate(
+                                    { _id: userDBId },
+                                    { $pull: { restaurants: restaurantDBId } },
+                                    { new: true }
+                                )
+                                .then((restaurantDeleted) => {
+
+                                    // delete a saved restaurant
+                                    db.Restaurant
+                                        .deleteOne({ _id: restaurantDBId })
+                                        .then((dbRestaurant) => res.send({ restaurant: dbRestaurant, users: restaurantDeleted }))
+                                        .catch((error) => res.status(500).send(error));
+                                })
+                                .catch((error) => res.status(500).send(error));
+                        })
+                    })
+                    .catch((error) => res.status(500).send(error));
+
+            })
+            .catch((error) => res.status(500).send({ error, errorMessage: `Restaurant not found, Register / Login to save it! ` }));
     },
     restaurantData: (req, res) => {
 
