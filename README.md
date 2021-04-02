@@ -15,8 +15,12 @@ Foodie is an app that helps find the nearest delicious food places, so you can e
 ## Foodie API 
 
 Foodie API has different endpoints that gives you access to multiple features
+- Search for restaurant in Boston and within you area #1
+- Save the restaurant that you like for future reference #2
+- Create an account to access the list of saved restaurant #3
+- Get information on a specific restaurant #4
 
-- Search for restaurant in Boston by simply calling the endpoint `https://foodie.afriticgroup.com/api/v1/restaurantdata?limit=1&q=Boston` 
+#### Search for restaurant in Boston by simply calling the endpoint `https://foodie.afriticgroup.com/api/v1/restaurantdata?limit=1&q=Boston` 
   
 Required query parameter:
    > **q=** type what you are looking for.
@@ -48,6 +52,67 @@ Required query parameter:
 }
 ```
 
+#### Create an account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/adduser` 
+  
+Required query parameter:
+   > **userId**
+   > **displayName**
+   > **email**
+
+Optional query parameter:
+   > **photoURL**
+
+  **Results**
+```
+{
+"userId": "TBPNX6ESSwUqOEkAV5cpdlM38a92",
+"displayName": "Yunus",
+"email": "yunus@test.com",
+"photoURL": "assets/images/avatar-placeholder.png"
+}
+```
+
+#### Save a restaurant by calling the endpoint `https://foodie.afriticgroup.com/api/v1/addrestaurant` 
+  
+Required query parameter:
+   > **userId**
+   > **restaurantId**
+   > **city**
+   > **state**
+   > **zipCode**
+
+Optional query parameter:
+   > **businessName**
+   > **dbaName**
+   > **licStatus**
+   > **licenceCat**
+   > **licenceAddDateTime**
+   > **description**
+   > **dayPhone**
+   > **latitude**
+   > **longitude**
+   > **propertyID**
+
+  **Results**
+```
+{
+  "userId":"TBPNX6ESSwUqOEkAV5cpdlM38a92",
+  "restaurantId": "993",
+  "businessName": "Energize",
+  "dbaName": null,
+  "licStatus": "Active",
+  "licenceCat": "FS",
+  "licenceAddDateTime": "2015-12-22 11:13:38",
+  "description": "Eating & Drinking",
+  "dayPhone": "+17812907769",
+  "propertyID": "143653",
+  "city": "Brighton",
+  "state": "MA",
+  "zipCode": "02135",
+  "latitude": "42.35044",
+  "longitude": "-71.16784"
+}
+```
 
 ## Technologies Used
 
