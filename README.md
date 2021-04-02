@@ -17,11 +17,12 @@ Foodie is an app that helps find the nearest delicious food places, so you can e
 Foodie API has different endpoints that gives you access to multiple features
 
 - Search for restaurant in Boston by simply calling the endpoint `https://foodie.afriticgroup.com/api/v1/restaurantdata?limit=1&q=Boston` 
-  required query parameter:
-   > **q=** and type what you are looking for.
+  
+Required query parameter:
+   > **q=** type what you are looking for.
   
   **Results**
-  ```
+```
 {
     "restaurants": [
         {
@@ -45,7 +46,7 @@ Foodie API has different endpoints that gives you access to multiple features
     ],
     "totalResults": 100
 }
-  ```
+```
 
 
 ## Technologies Used
