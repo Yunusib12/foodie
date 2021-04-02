@@ -15,15 +15,15 @@ Foodie is an app that helps find the nearest delicious food places, so you can e
 ## Foodie API 
 
 Foodie API has different endpoints that gives you access to multiple features
-- Search for restaurant in Boston and within you area #1
-- Save the restaurant that you like for future reference #2
-- Create an account to access the list of saved restaurant #3
-- Get information on a specific restaurant #4
+- Search for restaurant in Boston and within you area
+- Save the restaurant that you like for future reference
+- Create an account to access the list of saved restaurant
+- Get information on a specific restaurant
 
 #### Search for restaurant in Boston by simply calling the endpoint `https://foodie.afriticgroup.com/api/v1/restaurantdata?limit=1&q=Boston` 
   
-Required query parameter:
-   > **q=** type what you are looking for.
+> Required query parameter:
+  - **q=** type what you are looking for.
   
   **Results**
 ```
@@ -54,13 +54,13 @@ Required query parameter:
 
 #### Create a user account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/adduser` 
   
-Required query parameter:
-   > **userId**
-   > **displayName**
-   > **email**
+  > Required query parameter:
+   - **userId**
+   - **displayName**
+   - **email**
 
-Optional query parameter:
-   > **photoURL**
+> Optional query parameter:
+   - **photoURL**
 
   **Results**
 ```
@@ -74,24 +74,24 @@ Optional query parameter:
 
 #### Save a restaurant by calling the endpoint `https://foodie.afriticgroup.com/api/v1/addrestaurant` 
   
-Required query parameter:
-   > **userId**
-   > **restaurantId**
-   > **city**
-   > **state**
-   > **zipCode**
+> Required query parameter:
+   - **userId**
+   - **restaurantId**
+   - **city**
+   - **state**
+   - **zipCode**
 
-Optional query parameter:
-   > **businessName**
-   > **dbaName**
-   > **licStatus**
-   > **licenceCat**
-   > **licenceAddDateTime**
-   > **description**
-   > **dayPhone**
-   > **latitude**
-   > **longitude**
-   > **propertyID**
+> Optional query parameter:
+   - **businessName**
+   - **dbaName**
+   - **licStatus**
+   - **licenceCat**
+   - **licenceAddDateTime**
+   - **description**
+    **dayPhone**
+   - **latitude**
+   - **longitude**
+   - **propertyID**
 
   **Results**
 ```
@@ -115,13 +115,13 @@ Optional query parameter:
 ```
 #### Create a user account by calling the endpoint with a {POST} request `https://foodie.afriticgroup.com/api/v1/adduser` and a json data.
 
-Required query parameter:
-   > **userId**
-   > **displayName**
-   > **email**
+> Required query parameter:
+   - **userId**
+   - **displayName**
+   - **email**
 
-Optional query parameter:
-   > **photoURL**
+> Optional query parameter:
+   - **photoURL**
 
   **Results**
 ```
@@ -135,8 +135,8 @@ Optional query parameter:
 
 #### Get a specific user account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/user/{id}` 
 
-Required query parameter:
-   > **id**
+> Required query parameter:
+   - **id**
 
   **Results**
 ```
@@ -150,13 +150,13 @@ Required query parameter:
 
 #### Update a user account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/updateuser` 
 
-Required query parameter:
-   > **userId**
-   > **displayName**
-   > **email**
+> Required query parameter:
+  - **userId**
+  - **displayName**
+  - **email**
 
-Optional query parameter:
-   > **photoURL**
+> Optional query parameter:
+  - **photoURL**
 
   **Results**
 ```
@@ -170,13 +170,13 @@ Optional query parameter:
 
 #### Delete a user account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/deleteuser/{id}` 
 
-Required query parameter:
-   > **userId**
-   > **displayName**
-   > **email**
+> Required query parameter:
+  - **userId**
+  - **displayName**
+  - **email**
 
-Optional query parameter:
-   > **photoURL**
+> Optional query parameter:
+  - **photoURL**
 
   **Results**
 ```
