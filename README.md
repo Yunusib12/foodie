@@ -8,22 +8,44 @@ Foodie is an app that helps find the nearest delicious food places, so you can e
 ![foodie_demo_gif2](server/readme_media/foodie.gif)
 
 
-## How was it made?
-
-Foodsta is an React application with a backend running on Express.js. A MongoDB database serves and stores restaurants from the ANALYSE BOSTON, created and populated using the Mongoose ORM. 
-Google Firebase takes care of the Authentication for the project due to its flexibility and sheer out-of-the-box functionality. 
-
-
 ### Screenshots
 
-<img src="#">
-
-
-
+<img .src="./src/assets/images/foodie_API.png">
 
 ## Foodie API 
 
+Foodie API has different endpoints that gives you access to multiple features
 
+- Search for restaurant in Boston by simply calling the endpoint `https://foodie.afriticgroup.com/api/v1/restaurantdata?limit=1&q=Boston` 
+  required query parameter:
+   > **q=** and type what you are looking for.
+  
+  **Results**
+  ```
+{
+    "restaurants": [
+        {
+            "CITY": "Boston",
+            "LICSTATUS": "Active",
+            "LicenseAddDtTm": "2014-02-25 10:31:11",
+            "ZIP": "02116",
+            "dayphn": "+10000000000",
+            "BusinessName": "B. Good Burger",
+            "DESCRIPT": "Eating & Drinking",
+            "Longitude": "-71.07875",
+            "State": "MA",
+            "rank": 0.0573088,
+            "Address": "665 Boylston",
+            "Latitude": "42.34999",
+            "DBAName": null,
+            "_id": 167,
+            "LICENSECAT": "FS",
+            "Property_ID": "18372"
+        }
+    ],
+    "totalResults": 100
+}
+  ```
 
 
 ## Technologies Used
@@ -37,7 +59,7 @@ Google Firebase takes care of the Authentication for the project due to its flex
   - [nodemon](https://www.npmjs.com/package/nodemon)
 
 - GitHub
-- Heroku - For deployment
+- Local Server - For deployment
 
 #### Frontend technologies
 

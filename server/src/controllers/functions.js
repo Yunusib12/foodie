@@ -1,5 +1,7 @@
+const axios = require("axios");
 const restaurants = require("../__mocks__/restaurants");
 const db = require("../models");
+
 
 const functions = {
 
@@ -69,6 +71,35 @@ const functions = {
                     .catch((error) => error);
             })
             .catch((error) => error);
+    },
+    getRestaurantData: (baseUrl, query, limit) => {
+
+        return axios
+            .get(`${baseUrl}`)
+            .then((response) => {
+
+                // sending back the results from the live API 
+                const restaurantData = response.data.result.records;
+                const totalResults = restaurantData.length;
+                const restaurants = restaurantData.slice(0, limit);
+
+                // res.send({ restaurants, totalResults });
+
+                return { restaurants, totalResults };
+
+            }).catch((error) => {
+
+                // Incase of an error or the live API is not abvailable send back the data from the local file
+                const restaurantData = [];
+
+                restaurantData.push(functions.getLocalData(query));
+
+                const totalResults = restaurantData[0].length;
+                const restaurants = restaurantData[0].slice(0, limit);
+
+                return { error, restaurants, totalResults };
+                // res.status(500).send({ error, restaurants, totalResults });
+            });
     }
 };
 

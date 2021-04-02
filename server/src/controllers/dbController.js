@@ -1,6 +1,5 @@
 // import necessary module 
-const axios = require("axios");
-const functions = require("./functions");
+const { addRestToUserAndUserToRest, getRestaurantData } = require("./functions");
 
 // import Schema 
 const db = require("../models");
@@ -116,7 +115,7 @@ const dbController = {
                                 .then((userFound) => {
 
                                     const userDBId = userFound._id;
-                                    functions.addRestToUserAndUserToRest(restaurantDBId, userDBId, res);
+                                    addRestToUserAndUserToRest(restaurantDBId, userDBId, res);
                                 })
                                 .catch((error) => res.status(500).send({ error, errorMessage: `You need an account to be able to save a resaurant. Register / Login ` }));
                         })
@@ -135,7 +134,7 @@ const dbController = {
                             if (!isRestaurantSavedByUser) {
 
                                 // Add the restaurant information into user restaurant saved list
-                                functions.addRestToUserAndUserToRest(savedRestaurantId, userDBId, res);
+                                addRestToUserAndUserToRest(savedRestaurantId, userDBId, res);
 
                             } else {
 
@@ -220,33 +219,19 @@ const dbController = {
         (query == undefined) && (query = "");
 
 
-        const baseUrl = `https://data.boston.gov/api/3/action/datastore_search?resource_id=f1e13724-284d-478c-b8bc-ef042aa5b70b&q=${query}`;
+        const baseUrl = `https://data.boston.gov/api/3/action/datastore_search?resource_id=f1e13724-284d-478c-b8bc-ef042aa5b70b&q=`;
+        const searchUrl = `${baseUrl}${query}`;
 
-        console.log(baseUrl);
+        const resultRestaurants = getRestaurantData(searchUrl, query, limit);
 
-        axios
-            .get(`${baseUrl}`)
-            .then((response) => {
+        resultRestaurants.then((data) => {
 
-                // sending back the results from the live API 
-                const restaurantData = response.data.result.records;
-                const totalResults = restaurantData.length;
-                const restaurants = restaurantData.slice(0, limit);
+            const restaurants = data.restaurants;
+            const errorMessage = data.error;
+            const totalResults = data.totalResults
 
-                res.send({ restaurants, totalResults });
-
-            }).catch((error) => {
-
-                // Incase of an error or the live API is not abvailable send back the data from the local file
-                const restaurantData = [];
-
-                restaurantData.push(functions.getLocalData(query));
-
-                const totalResults = restaurantData[0].length;
-                const restaurants = restaurantData[0].slice(0, limit);
-
-                res.status(500).send({ error, restaurants, totalResults });
-            });
+            res.send({ restaurants, totalResults, errorMessage });
+        })
     }
 };
 

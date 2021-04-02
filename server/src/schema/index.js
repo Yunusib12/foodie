@@ -267,7 +267,6 @@ const Mutation = new GraphQLObjectType({
                                                 const savedRestaurantsByUser = userFound.restaurants;
                                                 const isRestaurantSavedByUser = savedRestaurantsByUser.indexOf(savedRestaurantId) !== -1;
 
-                                                console.log(`isRestaurantSavedByUser`, isRestaurantSavedByUser)
                                                 if (!isRestaurantSavedByUser) {
                                                     // Add the restaurant information into user restaurant saved list
                                                     return addRestToUserAndUserToRestGQL(savedRestaurantId, userDBId);
