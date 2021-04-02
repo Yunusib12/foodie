@@ -342,5 +342,6 @@ Foodie API has different endpoints that gives you access to multiple features
   - [mongoose](https://www.npmjs.com/package/mongoose)
 
 - GitHub
+- Atlas MongoDB 
 - Local Server - For deployment
 
