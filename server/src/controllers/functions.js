@@ -29,7 +29,7 @@ const functions = {
         // update Restaurant information into User list of restaurants
 
         return db.User
-            .updateOne(
+            .findOneAndUpdate(
                 { _id: userDBId },
                 { $push: { restaurants: savedRestaurantId } },
                 { new: true, useFindAndModify: false })
@@ -37,7 +37,7 @@ const functions = {
 
                 //update the restaurant with the user information
                 return db.Restaurant
-                    .updateOne(
+                    .findOneAndUpdate(
                         { _id: savedRestaurantId },
                         { $push: { users: userDBId } },
                         { new: true, useFindAndModify: false }
@@ -46,50 +46,29 @@ const functions = {
                     .catch((error) => res.status(500).send(error));
             })
             .catch((error) => res.status(500).send(error));
+    },
+    addRestToUserAndUserToRestGQL: (savedRestaurantId, userDBId) => {
 
+        // update Restaurant information into User list of restaurants
 
+        return db.User
+            .findOneAndUpdate(
+                { _id: userDBId },
+                { $push: { restaurants: savedRestaurantId } },
+                { new: true, useFindAndModify: false })
+            .then((userUpdated) => {
 
-
-
-
-
-
-
-
-        // return db.User
-        //     .updateOne(
-        //         userId,
-        //         {
-        //             $push: {
-        //                 restaurants: restaurantId
-        //             }
-        //         },
-        //         {
-        //             new: true,
-        //             useFindAndModify: false
-        //         }
-        //     )
-        //     .then((userFoundAndUpdated) => {
-        //         //update the restaurant with the user information
-        //         return db.Restaurant
-        //             .updateOne({
-        //                 _id: restaurantId
-        //             },
-        //                 {
-        //                     $push: {
-        //                         users: userFoundAndUpdated._id
-        //                     }
-        //                 },
-        //                 {
-        //                     new: true,
-        //                     useFindAndModify: false
-        //                 }
-        //             )
-        //             .then((restaurantFoundAndUpdated) => restaurantFoundAndUpdated)
-        //             .catch((error) => res.status(500).send(error));
-        //     })
-        //     .catch((error) => res.status(500).send(error));
-
+                //update the restaurant with the user information
+                return db.Restaurant
+                    .findOneAndUpdate(
+                        { _id: savedRestaurantId },
+                        { $push: { users: userDBId } },
+                        { new: true, useFindAndModify: false }
+                    )
+                    .then((restaurantUpdated) => restaurantUpdated)
+                    .catch((error) => error);
+            })
+            .catch((error) => error);
     }
 };
 

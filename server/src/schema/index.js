@@ -1,5 +1,6 @@
 const graphql = require("graphql");
 const db = require("../models");
+const { addRestToUserAndUserToRestGQL } = require("../controllers/functions");
 
 // GraphQL Type
 const {
@@ -22,6 +23,9 @@ const UserType = new GraphQLObjectType({
         _id: {
             type: GraphQLID
         },
+        userId: {
+            type: GraphQLString
+        },
         displayName: {
             type: GraphQLString
         },
@@ -31,16 +35,18 @@ const UserType = new GraphQLObjectType({
         photoURL: {
             type: GraphQLString
         },
-        userCreated: {
-            type: GraphQLDate
-        },
-        likedRestaurant: {
+        restaurants: {
             type: new GraphQLList(RestaurantType),
             resolve(parent, args) {
-                return db.User.findById(parent._id);
+                return db.Restaurant.find({ _id: parent.restaurants });
             }
+        },
+        createdAt: {
+            type: GraphQLString
+        },
+        updatedAt: {
+            type: GraphQLString
         }
-
     })
 });
 
@@ -49,22 +55,220 @@ const RestaurantType = new GraphQLObjectType({
     name: "Restaurant",
     description: "Restaurant information",
     fields: () => ({
+        _id: { type: GraphQLID },
         restaurantId: { type: GraphQLString },
-        businessName: { type: SGraphQLString },
-        dbaName: { type: SGraphQLString },
-        licStatus: { type: SGraphQLString },
-        licenceCat: { type: SGraphQLString },
-        licenceAddDateTime: { type: SGraphQLString },
-        description: { type: SGraphQLString },
-        dayPhone: { type: SGraphQLString },
-        propertyID: { type: SGraphQLString },
-        address: { type: SGraphQLString },
-        city: { type: SGraphQLString },
-        state: { type: SGraphQLString },
-        zipCode: { type: SGraphQLString },
-        latitude: { type: SGraphQLString },
-        longitude: { type: SGraphQLString },
-        savedAt: { type: SGraphQLDate },
-        user: ""
+        businessName: { type: GraphQLString },
+        dbaName: { type: GraphQLString },
+        licStatus: { type: GraphQLString },
+        licenceCat: { type: GraphQLString },
+        licenceAddDateTime: { type: GraphQLString },
+        description: { type: GraphQLString },
+        dayPhone: { type: GraphQLString },
+        propertyID: { type: GraphQLString },
+        address: { type: GraphQLString },
+        city: { type: GraphQLString },
+        state: { type: GraphQLString },
+        zipCode: { type: GraphQLString },
+        latitude: { type: GraphQLString },
+        longitude: { type: GraphQLString },
+        users: {
+            type: new GraphQLList(UserType),
+            resolve(parent, args) {
+                return db.User.find({ _id: parent.users })
+            }
+        },
+        createdAt: {
+            type: GraphQLString
+        },
+        updatedAt: {
+            type: GraphQLString
+        }
     })
+});
+
+
+// GraphQl Root Query
+const RootQuery = new GraphQLObjectType({
+    name: "RootQueryType",
+    fields: {
+        user: {
+            type: UserType,
+            args: {
+                userId: {
+                    type: GraphQLString
+                }
+            },
+            resolve(parent, args) {
+                return db.User.findOne({ userId: args.userId });
+            }
+        },
+        users: {
+            type: new GraphQLList(UserType),
+            resolve(parent, args) {
+                return db.User.find({});
+            }
+        },
+        restaurant: {
+            type: RestaurantType,
+            args: {
+                restaurantId: {
+                    type: GraphQLString
+                }
+            },
+            resolve(parent, args) {
+                return db.Restaurant.findOne({ restaurantId: args.restaurantId });
+            }
+        }
+    }
+});
+
+
+// Mutation allow to create, update, delete functionality
+const Mutation = new GraphQLObjectType({
+    name: "Mutation",
+    fields: {
+        addUser: {
+            type: UserType,
+            args: {
+                userId: {
+                    type: new GraphQLNonNull(GraphQLString)
+                },
+                displayName: {
+                    type: new GraphQLNonNull(GraphQLString)
+                },
+                email: {
+                    type: new GraphQLNonNull(GraphQLString)
+                },
+                photoURL: {
+                    type: GraphQLString
+                }
+            },
+            resolve(parent, args) {
+                let user = new db.User({
+                    userId: args.userId,
+                    displayName: args.displayName,
+                    email: args.email,
+                    photoURL: args.photoURL
+                });
+                return user.save();
+            }
+        },
+        updateUser: {
+            type: UserType,
+            args: {
+                _id: {
+                    type: GraphQLID
+                },
+                displayName: {
+                    type: new GraphQLNonNull(GraphQLString)
+                },
+                email: {
+                    type: new GraphQLNonNull(GraphQLString)
+                },
+                photoURL: {
+                    type: GraphQLString
+                }
+            },
+            resolve(parent, args) {
+                let user = {
+                    displayName: args.displayName,
+                    email: args.email,
+                    photoURL: args.photoURL
+                }
+                return db.User.findOneAndUpdate({ _id: args._id }, user, { new: true });
+            }
+        },
+        deleteUser: {
+            type: UserType,
+            args: {
+                _id: {
+                    type: GraphQLID
+                }
+            },
+            resolve(parent, args) {
+                return db.User.findOneAndDelete({ _id: args._id });
+            }
+        },
+        addRestaurant: {
+            type: RestaurantType,
+            args: {
+                userId: { type: new GraphQLNonNull(GraphQLString) },
+                restaurantId: { type: new GraphQLNonNull(GraphQLString) },
+                businessName: { type: GraphQLString },
+                dbaName: { type: GraphQLString },
+                licStatus: { type: GraphQLString },
+                licenceCat: { type: GraphQLString },
+                licenceAddDateTime: { type: GraphQLString },
+                description: { type: GraphQLString },
+                dayPhone: { type: GraphQLString },
+                propertyID: { type: GraphQLString },
+                address: { type: GraphQLString },
+                city: { type: new GraphQLNonNull(GraphQLString) },
+                state: { type: new GraphQLNonNull(GraphQLString) },
+                zipCode: { type: new GraphQLNonNull(GraphQLString) },
+                latitude: { type: GraphQLString },
+                longitude: { type: GraphQLString }
+            },
+            resolve(parent, args) {
+
+                // retrieve the userId 
+                const userId = args.userId;
+                const restaurantId = args.restaurantId;
+                const restaurantInfo = {
+                    "restaurantId": args.restaurantId,
+                    "businessName": args.businessName,
+                    "dbaName": args.dbaName,
+                    "licStatus": args.licStatus,
+                    "licenceCat": args.licenceCat,
+                    "licenceAddDateTime": args.licenceAddDateTime,
+                    "description": args.description,
+                    "dayPhone": args.dayPhone,
+                    "propertyID": args.propertyID,
+                    "city": args.city,
+                    "state": args.state,
+                    "zipCode": args.zipCode,
+                    "latitude": args.latitude,
+                    "longitude": args.longitude
+                };
+
+                return db.User
+                    .findOne({ userId })
+                    .then((userFound) => {
+
+                        const userDBId = userFound._id;
+
+                        if (userFound !== null) {
+
+                            return db.Restaurant
+                                .findOne({ restaurantId })
+                                .then((restaurantFound) => {
+
+                                    if (!restaurantFound) {
+
+                                        // Add restaurant information into the database
+                                        return db.Restaurant
+                                            .create(restaurantInfo)
+                                            .then((restaurantSaved) => {
+
+                                                const restaurantDBId = restaurantSaved._id;
+
+                                                return addRestToUserAndUserToRestGQL(restaurantDBId, userDBId);
+                                            })
+                                            .catch((error) => error);
+                                    }
+                                })
+                                .catch((error) => error);
+                        }
+                    })
+                    .catch((error) => console.log(`${error} \nYou need an account to be able to save a resaurant. Register / Login `));
+
+
+            }
+        }
+    }
+});
+
+module.exports = new GraphQLSchema({
+    query: RootQuery,
+    mutation: Mutation
 });

@@ -42,7 +42,7 @@ const dbController = {
 
         // update the user information in the db
         db.User
-            .updateOne({ userId: userInfo.userId }, userInfo)
+            .updateOne({ userId: userInfo.userId }, userInfo, { new: true })
             .then((dbUser) => res.send(dbUser))
             .catch((error) => res.status(500).send(error));
     },
@@ -55,7 +55,7 @@ const dbController = {
             .then((userFound) => {
 
                 const userDBId = userFound._id;
-
+                console.log(`userDBId`, userDBId)
                 // check all the student reference's in restaurants 
                 db.Restaurant
                     .find({
@@ -63,22 +63,24 @@ const dbController = {
                     })
                     .then((restaurants) => {
                         restaurants.map((restaurant) => {
-
+                            console.log(`restaurant`, restaurant)
                             const restaurantId = restaurant._id;
 
                             // remove all the user's reference from each restaurant that the user saved
-                            db.Restaurant.findOneAndUpdate(
-                                { _id: restaurantId },
-                                { $pull: { users: userDBId } },
-                                { new: true }
-                            )
+                            db.Restaurant
+                                .findOneAndUpdate(
+                                    { _id: restaurantId },
+                                    { $pull: { users: userDBId } },
+                                    { new: true }
+                                )
+                                .catch((error) => res.status(500).send(error));
                         })
                     })
                     .then(() => {
 
                         // delete the user 
                         db.User
-                            .deleteOne({ _id: userDBId })
+                            .findOneAndDelete({ _id: userDBId })
                             .then((dbUser) => res.send({ message: dbUser }))
                             .catch((error) => res.status(500).send(error));
                     })
@@ -199,7 +201,7 @@ const dbController = {
 
                         // delete a saved restaurant
                         db.Restaurant
-                            .deleteOne({ _id: restaurantDBId })
+                            .findOneAndDelete({ _id: restaurantDBId })
                             .then((dbRestaurant) => res.send({ message: dbRestaurant }))
                             .catch((error) => res.status(500).send(error));
                     })

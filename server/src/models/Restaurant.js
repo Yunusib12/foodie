@@ -20,8 +20,7 @@ const RestaurantSchema = new Schema({
     zipCode: { type: String, required: true },
     latitude: { type: String },
     longitude: { type: String },
-    users: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    savedAt: { type: Date, default: Date.now }
-});
+    users: [{ type: Schema.Types.ObjectId, ref: "User" }]
+}, { timestamps: true });
 
 module.exports = model("Restaurant", RestaurantSchema);

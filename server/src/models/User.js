@@ -28,12 +28,8 @@ const UserSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "Restaurant"
         }
-    ],
-    userCreated: {
-        type: Date,
-        default: Date.now
-    }
-});
+    ]
+}, { timestamps: true });
 
 module.exports = model("User", UserSchema);
 
