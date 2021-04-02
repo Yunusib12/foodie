@@ -20,7 +20,8 @@ Foodie API has different endpoints that gives you access to multiple features
 - Create an account to access the list of saved restaurant
 - Get information on a specific restaurant
 
-#### Search for restaurant in Boston by simply calling the endpoint `https://foodie.afriticgroup.com/api/v1/restaurantdata?limit=1&q=Boston` 
+#### Search for restaurant in Boston by simply calling the endpoint 
+`https://foodie.afriticgroup.com/api/v1/restaurantdata?limit=1&q=Boston` 
   
 > Required query parameter:
   - **q=** type what you are looking for.
@@ -52,7 +53,8 @@ Foodie API has different endpoints that gives you access to multiple features
 }
 ```
 
-#### Create a user account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/adduser` 
+#### Create a user account by calling the endpoint 
+`https://foodie.afriticgroup.com/api/v1/adduser` 
   
   > Required query parameter:
    - **userId**
@@ -72,7 +74,8 @@ Foodie API has different endpoints that gives you access to multiple features
 }
 ```
 
-#### Save a restaurant by calling the endpoint `https://foodie.afriticgroup.com/api/v1/addrestaurant` 
+#### Save a restaurant by calling the endpoint 
+`https://foodie.afriticgroup.com/api/v1/addrestaurant` 
   
 > Required query parameter:
    - **userId**
@@ -113,7 +116,8 @@ Foodie API has different endpoints that gives you access to multiple features
   "longitude": "-71.16784"
 }
 ```
-#### Create a user account by calling the endpoint with a {POST} request `https://foodie.afriticgroup.com/api/v1/adduser` and a json data.
+#### Create a user account by calling the endpoint with a {POST} request 
+`https://foodie.afriticgroup.com/api/v1/adduser`
 
 > Required query parameter:
    - **userId**
@@ -133,7 +137,8 @@ Foodie API has different endpoints that gives you access to multiple features
 }
 ```
 
-#### Get a specific user account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/user/{id}` 
+#### Get a specific user account by calling the endpoint 
+`https://foodie.afriticgroup.com/api/v1/user/{id}` 
 
 > Required query parameter:
    - **id**
@@ -148,7 +153,8 @@ Foodie API has different endpoints that gives you access to multiple features
 }
 ```
 
-#### Update a user account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/updateuser` 
+#### Update a user account by calling the endpoint 
+`https://foodie.afriticgroup.com/api/v1/updateuser` 
 
 > Required query parameter:
   - **userId**
@@ -168,7 +174,8 @@ Foodie API has different endpoints that gives you access to multiple features
 }
 ```
 
-#### Delete a user account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/deleteuser/{id}` 
+#### Delete a user account by calling the endpoint 
+`https://foodie.afriticgroup.com/api/v1/deleteuser/{id}` 
 
 > Required query parameter:
   - **userId**
