@@ -191,6 +191,7 @@ const Mutation = new GraphQLObjectType({
         },
         addRestaurant: {
             type: RestaurantType,
+            description: "Add a new /  update an existing one restaurant ",
             args: {
                 userId: { type: new GraphQLNonNull(GraphQLString) },
                 restaurantId: { type: new GraphQLNonNull(GraphQLString) },
@@ -255,6 +256,30 @@ const Mutation = new GraphQLObjectType({
                                                 return addRestToUserAndUserToRestGQL(restaurantDBId, userDBId);
                                             })
                                             .catch((error) => error);
+                                    } else {
+                                        // Check if the USER already SAVED the restaurant
+                                        return db.User
+                                            .findOne({ userId: userId })
+                                            .then((userFound) => {
+
+                                                const savedRestaurantId = restaurantFound._id;
+                                                const userDBId = userFound._id;
+                                                const savedRestaurantsByUser = userFound.restaurants;
+                                                const isRestaurantSavedByUser = savedRestaurantsByUser.indexOf(savedRestaurantId) !== -1;
+
+                                                console.log(`isRestaurantSavedByUser`, isRestaurantSavedByUser)
+                                                if (!isRestaurantSavedByUser) {
+                                                    // Add the restaurant information into user restaurant saved list
+                                                    return addRestToUserAndUserToRestGQL(savedRestaurantId, userDBId);
+
+                                                } else {
+
+                                                    const errorMessage = `errorMessage: "You already saved the restaurant!`;
+
+                                                    return errorMessage;
+                                                }
+                                            })
+                                            .catch((error) => console.log(`${error}, You need an account to be able to save a resaurant. Register / Login `));
                                     }
                                 })
                                 .catch((error) => error);
