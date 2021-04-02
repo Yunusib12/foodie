@@ -5,7 +5,7 @@ by `Yunus Ibrahim`
 
 Foodie is an app that helps find the nearest delicious food places, so you can enjoy the most of you visit in town.
 
-![foodsta_demo_gif2](server/readme_media/foodsta_2.gif)
+![foodie_demo_gif2](server/readme_media/foodie.gif)
 
 
 ## How was it made?
@@ -16,7 +16,7 @@ Google Firebase takes care of the Authentication for the project due to its flex
 
 ### Screenshots
 
-<img src="https://raw.githubusercontent.com/Yunusib12/Buger/master/public/assets/images/my_burger.gif">
+<img src="#">
 
 
 
