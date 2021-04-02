@@ -3,7 +3,7 @@ by `Yunus Ibrahim`
 
 ## What is it?
 
-Foodie is an app that helps find the nearest delicious food places, so you can enjoy the most of you visit in town.
+Foodie is an app that helps find the nearest delicious food places, so you can enjoy the most of you visit in town. The data are collected from the ANALYZE BOSTON API
 
 ![foodie_demo_gif2](server/readme_media/foodie.gif)
 
@@ -52,7 +52,7 @@ Required query parameter:
 }
 ```
 
-#### Create an account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/adduser` 
+#### Create a user account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/adduser` 
   
 Required query parameter:
    > **userId**
@@ -113,6 +113,81 @@ Optional query parameter:
   "longitude": "-71.16784"
 }
 ```
+#### Create a user account by calling the endpoint with a {POST} request `https://foodie.afriticgroup.com/api/v1/adduser` and a json data.
+
+Required query parameter:
+   > **userId**
+   > **displayName**
+   > **email**
+
+Optional query parameter:
+   > **photoURL**
+
+  **Results**
+```
+{
+"userId": "TBPNX6ESSwUqOEkAV5cpdlM38a92",
+"displayName": "Yunus",
+"email": "yunus@test.com",
+"photoURL": "assets/images/avatar-placeholder.png"
+}
+```
+
+#### Get a specific user account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/user/{id}` 
+
+Required query parameter:
+   > **id**
+
+  **Results**
+```
+{
+"userId": "TBPNX6ESSwUqOEkAV5cpdlM38a92",
+"displayName": "Yunus",
+"email": "yunus@test.com",
+"photoURL": "assets/images/avatar-placeholder.png"
+}
+```
+
+#### Update a user account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/updateuser` 
+
+Required query parameter:
+   > **userId**
+   > **displayName**
+   > **email**
+
+Optional query parameter:
+   > **photoURL**
+
+  **Results**
+```
+{
+"userId": "TBPNX6ESSwUqOEkAV5cpdlM38a92",
+"displayName": "Yunus",
+"email": "yunus@test.com",
+"photoURL": "assets/images/avatar-placeholder.png"
+}
+```
+
+#### Delete a user account by calling the endpoint `https://foodie.afriticgroup.com/api/v1/deleteuser/{id}` 
+
+Required query parameter:
+   > **userId**
+   > **displayName**
+   > **email**
+
+Optional query parameter:
+   > **photoURL**
+
+  **Results**
+```
+{
+"userId": "TBPNX6ESSwUqOEkAV5cpdlM38a92",
+"displayName": "Yunus",
+"email": "yunus@test.com",
+"photoURL": "assets/images/avatar-placeholder.png"
+}
+```
+
 
 ## Technologies Used
 
@@ -127,26 +202,3 @@ Optional query parameter:
 - GitHub
 - Local Server - For deployment
 
-#### Frontend technologies
-
-- HTML
-- CSS
-- Bootstrap (http://getbootstrap.com/)
-- Javascript
-- jQuery (https://jquery.com/)
-
-
-### Technologies
-* Google Firebase Authentication, 
-* MongoDB
-* Mongoose
-* Google Places API, Google Geolocation API
-* Multer
-* PM2
-* React
-* JavaScript
-* Node.js
-* HTML5
-* SCSS
-* Express
-* Node

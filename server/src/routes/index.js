@@ -24,12 +24,12 @@ routes.get("/", (req, res) => {
                 },
                 user: {
                     httpMethod: "GET",
-                    route: "/api/v1/user/:id",
+                    route: "/api/v1/user/{id}",
                     description: "The endpoint get a specific user information."
                 },
                 deleteUser: {
                     httpMethod: "DELETE",
-                    route: "/api/v1/deleteuser/:id",
+                    route: "/api/v1/deleteuser/{id}",
                     description: "The endpoint get delete a user in the database."
                 },
                 updateUser: {
@@ -51,12 +51,12 @@ routes.get("/", (req, res) => {
                 },
                 restaurant: {
                     httpMethod: "GET",
-                    route: "/api/v1/restaurant/:id",
+                    route: "/api/v1/restaurant/{id}",
                     description: "The endpoint get a specific restaurant information."
                 },
                 deleteRestaurant: {
                     httpMethod: "DELETE",
-                    route: "/api/v1/deleterestaurant/:id",
+                    route: "/api/v1/deleterestaurant/{id}",
                     description: "The endpoint get delete a restaurant in the database."
                 }
             },
