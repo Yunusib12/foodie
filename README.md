@@ -3,7 +3,7 @@ by `Yunus Ibrahim`
 
 ## What is it?
 
-Foodie is an app that helps find the nearest delicious food places, so you can enjoy the most of you visit in town. The data are collected from the **ANALYZE BOSTON API**
+Foodie is an app that helps find the nearest delicious food places, so you can enjoy the most of you visit in town. The data are collected from the **ANALYZE BOSTON API**.
 
 ![foodie_demo_gif2](server/readme_media/foodie.gif)
 
@@ -19,6 +19,7 @@ Foodie API has different endpoints that gives you access to multiple features
 - Save the restaurant that you like for future reference
 - Create an account to access the list of saved restaurant
 - Get information on a specific restaurant
+- Get all the restaurants saved by a user
 
 #### Search for restaurant in Boston by simply calling the endpoint with a {GET} request
 `https://foodie.afriticgroup.com/api/v1/restaurantdata?limit=1&q=Boston` 
@@ -291,15 +292,54 @@ Foodie API has different endpoints that gives you access to multiple features
 ]
 ```
 
+#### Delete a saved restaurant on Foodie API by calling the endpoint with a {DELETE} request
+`https://foodie.afriticgroup.com/api/v1/deleterestaurant/{id}` 
+
+> Required query parameter:
+  - **restaurantId** 
+
+  **Results**
+```
+{
+    "message": {
+        "users": [
+            "6067a7cda8562670d1287557"
+        ],
+        "_id": "6067a8b0a8562670d1287558",
+        "restaurantId": "993",
+        "businessName": "Energize",
+        "dbaName": null,
+        "licStatus": "Active",
+        "licenceCat": "FS",
+        "licenceAddDateTime": "2015-12-22 11:13:38",
+        "description": "Eating & Drinking",
+        "dayPhone": "+17812907769",
+        "propertyID": "143653",
+        "city": "Brighton",
+        "state": "MA",
+        "zipCode": "02135",
+        "latitude": "42.35044",
+        "longitude": "-71.16784",
+        "createdAt": "2021-04-02T23:28:48.768Z",
+        "updatedAt": "2021-04-02T23:28:48.948Z",
+        "__v": 0
+    }
+}
+```
+
+
 ## Technologies Used
 
 #### Backend technologies
 
 - Node packages:
 
-  - [Handlebars](http://handlebarsjs.com/)
+  - [axios](https://www.npmjs.com/package/axios)
+  - [cors](https://www.npmjs.com/package/cors)
+  - [dotenv](https://www.npmjs.com/package/dotenv)
   - [express](https://www.npmjs.com/package/express)
-  - [nodemon](https://www.npmjs.com/package/nodemon)
+  - [mongodb](https://www.npmjs.com/package/mongodb)
+  - [mongoose](https://www.npmjs.com/package/mongoose)
 
 - GitHub
 - Local Server - For deployment
