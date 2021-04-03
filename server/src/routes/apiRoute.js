@@ -45,7 +45,7 @@ routes
 // delete a restaurant
 routes
     .route("/deleterestaurant/:id")
-    .delete(dbController.deletetRestaurant);
+    .delete(dbController.deleteRestaurant);
 
 // Get restaurant Data from the online API
 routes

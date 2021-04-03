@@ -141,6 +141,12 @@ const Mutation = new GraphQLObjectType({
                 },
                 photoURL: {
                     type: GraphQLString
+                },
+                createdAt: {
+                    type: GraphQLString
+                },
+                updatedAt: {
+                    type: GraphQLString
                 }
             },
             resolve(parent, args) {
@@ -181,12 +187,51 @@ const Mutation = new GraphQLObjectType({
         deleteUser: {
             type: UserType,
             args: {
-                _id: {
+                userId: {
                     type: GraphQLID
                 }
             },
             resolve(parent, args) {
-                return db.User.findOneAndDelete({ _id: args._id });
+                // find the user information
+                const userId = args.userId;
+
+                return db.User
+                    .findOne({ userId })
+                    .then((userFound) => {
+
+                        const userDBId = userFound._id;
+
+                        // check all the student reference's in restaurants 
+                        return db.Restaurant
+                            .find({
+                                users: { $in: [userDBId] }
+                            })
+                            .then((restaurants) => {
+                                restaurants.map((restaurant) => {
+
+                                    const restaurantId = restaurant._id;
+
+                                    // remove all the user's reference from each restaurant that the user saved
+                                    return db.Restaurant
+                                        .findOneAndUpdate(
+                                            { _id: restaurantId },
+                                            { $pull: { users: userDBId } },
+                                            { new: true }
+                                        )
+                                        .catch((error) => error);
+                                })
+                            })
+                            .then(() => {
+
+                                // delete the user 
+                                return db.User
+                                    .findOneAndDelete({ _id: userDBId })
+                                    .then((dbUser) => dbUser)
+                                    .catch((error) => error);
+                            })
+                            .catch((error) => { ` ${error},Restaurant not found, Register / Login to save it! ` });
+                    })
+                    .catch((error) => { ` ${error}, User not found, Register / Login ` });
             }
         },
         addRestaurant: {
@@ -285,8 +330,58 @@ const Mutation = new GraphQLObjectType({
                         }
                     })
                     .catch((error) => console.log(`${error} \nYou need an account to be able to save a resaurant. Register / Login `));
+            }
+        },
+        deleteRestaurant: {
+            type: RestaurantType,
+            description: "Delete a restaurant ",
+            args: {
+                restaurantId: {
+                    type: GraphQLID
+                }
+            },
+            resolve(parents, args) {
 
+                const restaurantId = args.restaurantId;
 
+                return db.Restaurant
+                    .findOne({ restaurantId })
+                    .then((restaurantFound) => {
+
+                        const restaurantDBId = restaurantFound._id;
+
+                        // check all the user that saved the restaurant 
+                        return db.User
+                            .find({
+                                restaurants: { $in: [restaurantDBId] }
+                            })
+                            .then((restaurants) => {
+                                restaurants.map((restaurant) => {
+
+                                    const userDBId = restaurant._id;
+
+                                    // remove all the restaurant's reference from each user that saved it
+                                    return db.User
+                                        .findOneAndUpdate(
+                                            { _id: userDBId },
+                                            { $pull: { restaurants: restaurantDBId } },
+                                            { new: true }
+                                        )
+                                        .catch((error) => error);
+                                })
+                            })
+                            .then(() => {
+
+                                // delete a saved restaurant
+                                return db.Restaurant
+                                    .findOneAndDelete({ _id: restaurantDBId })
+                                    .then((dbRestaurant) => dbRestaurant)
+                                    .catch((error) => error);
+                            })
+                            .catch((error) => error);
+
+                    })
+                    .catch((error) => { `${error}, Restaurant not found, Register / Login to save it! ` });
             }
         }
     }

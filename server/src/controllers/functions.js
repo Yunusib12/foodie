@@ -83,8 +83,6 @@ const functions = {
                 const totalResults = restaurantData.length;
                 const restaurants = restaurantData.slice(0, limit);
 
-                // res.send({ restaurants, totalResults });
-
                 return { restaurants, totalResults };
 
             }).catch((error) => {
@@ -98,7 +96,6 @@ const functions = {
                 const restaurants = restaurantData[0].slice(0, limit);
 
                 return { error, restaurants, totalResults };
-                // res.status(500).send({ error, restaurants, totalResults });
             });
     }
 };

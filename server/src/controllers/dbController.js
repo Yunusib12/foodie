@@ -166,7 +166,7 @@ const dbController = {
             .then((dbRestaurant) => res.send(dbRestaurant))
             .catch((error) => res.status(500).send(error));
     },
-    deletetRestaurant: (req, res) => {
+    deleteRestaurant: (req, res) => {
 
         const restaurantId = req.params.id;
 
