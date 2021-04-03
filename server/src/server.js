@@ -9,7 +9,7 @@ const cors = require("cors");
 // global variables 
 const schema = require("./schema/");
 const routes = require("./routes");
-const { APP_PORT, MONGODB_URL } = require("./config");
+const { APP_PORT, MONGODB_URI } = require("./config");
 
 // initialize express 
 const app = express();
