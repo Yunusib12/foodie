@@ -10,7 +10,7 @@ Foodie is an app that helps find the nearest delicious food places, so you can e
 
 ### Screenshots
 
-<img .src="./src/assets/images/foodie_API.png">
+<img src="./src/assets/images/foodie_API.png">
 
 ## Foodie API 
 
