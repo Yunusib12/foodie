@@ -29,11 +29,11 @@ app.use(routes);
 // initialize GraphQl and start the server
 app.use("/graphql", graphqlHTTP({
     schema,
-    graphiql: true
+    graphiql: false
 }));
 
 // connect to our MongoDB database 
-mongoose.connect(MONGODB_URL, {
+mongoose.connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
