@@ -5,7 +5,7 @@ by `Yunus Ibrahim`
 
 Foodie is an app that helps find the nearest delicious food places, so you can enjoy the most of you visit in town. The data are collected from the **ANALYZE BOSTON API**.
 
-![foodie_demo_gif2](server/public/assets/images/foodie.gif)
+![foodie_demo_gif](server/public/assets/images/foodie.gif)
 
 
 ### Screenshots
