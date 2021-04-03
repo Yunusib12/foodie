@@ -29,7 +29,10 @@ Foodie API has different endpoints that gives you access to multiple features
 `https://foodie.afriticgroup.com/api/v1/restaurantdata?limit=1&q=Boston` 
   
 > Required query parameter:
-  - **q=** type what you are looking for.
+  - **q=** ~ type what you are looking for.
+  
+> Optional query parameter:
+   - **limit** ~ You can specify the limit of the results wanted
   
   **Results**
 ```
