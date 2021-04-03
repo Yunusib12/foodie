@@ -1,6 +1,8 @@
 const graphql = require("graphql");
 const db = require("../models");
-const { addRestToUserAndUserToRestGQL } = require("../controllers/functions");
+const axios = require("axios");
+const { APP_PORT, SERVER_URL, API_VERSION } = require("../config");
+
 
 // GraphQL Type
 const {
@@ -99,13 +101,19 @@ const RootQuery = new GraphQLObjectType({
                 }
             },
             resolve(parent, args) {
-                return db.User.findOne({ userId: args.userId });
+                return axios
+                    .get(`${SERVER_URL}:${APP_PORT}/api/${API_VERSION}/user/${args.userId}`)
+                    .then((res) => res.data)
+                    .catch((error) => error);
             }
         },
         users: {
             type: new GraphQLList(UserType),
             resolve(parent, args) {
-                return db.User.find({});
+                return axios
+                    .get(`${SERVER_URL}:${APP_PORT}/api/${API_VERSION}/users`)
+                    .then((users) => users.data)
+                    .catch((error) => error);
             }
         },
         restaurant: {
@@ -116,7 +124,19 @@ const RootQuery = new GraphQLObjectType({
                 }
             },
             resolve(parent, args) {
-                return db.Restaurant.findOne({ restaurantId: args.restaurantId });
+                return axios
+                    .get(`${SERVER_URL}:${APP_PORT}/api/${API_VERSION}/restaurant/${args.restaurantId}`)
+                    .then((restaurant) => restaurant.data)
+                    .catch((error) => error);
+            }
+        },
+        restaurants: {
+            type: new GraphQLList(RestaurantType),
+            resolve(parent, args) {
+                return axios
+                    .get(`${SERVER_URL}:${APP_PORT}/api/${API_VERSION}/restaurants`)
+                    .then((restaurants) => restaurants.data)
+                    .catch((error) => error);
             }
         }
     }
@@ -150,13 +170,17 @@ const Mutation = new GraphQLObjectType({
                 }
             },
             resolve(parent, args) {
-                let user = new db.User({
+                let user = {
                     userId: args.userId,
                     displayName: args.displayName,
                     email: args.email,
                     photoURL: args.photoURL
-                });
-                return user.save();
+                };
+
+                return axios
+                    .post(`${SERVER_URL}:${APP_PORT}/api/${API_VERSION}/adduser`, user)
+                    .then((dbUser) => dbUser.data)
+                    .catch((error) => error);
             }
         },
         updateUser: {
@@ -177,11 +201,15 @@ const Mutation = new GraphQLObjectType({
             },
             resolve(parent, args) {
                 let user = {
+                    userId: args._id,
                     displayName: args.displayName,
                     email: args.email,
                     photoURL: args.photoURL
                 }
-                return db.User.findOneAndUpdate({ _id: args._id }, user, { new: true });
+                return axios
+                    .patch(`${SERVER_URL}:${APP_PORT}/api/${API_VERSION}/updateuser`, user)
+                    .then((updatedUser) => updatedUser.data)
+                    .catch((error) => error);
             }
         },
         deleteUser: {
@@ -192,46 +220,11 @@ const Mutation = new GraphQLObjectType({
                 }
             },
             resolve(parent, args) {
-                // find the user information
-                const userId = args.userId;
 
-                return db.User
-                    .findOne({ userId })
-                    .then((userFound) => {
-
-                        const userDBId = userFound._id;
-
-                        // check all the student reference's in restaurants 
-                        return db.Restaurant
-                            .find({
-                                users: { $in: [userDBId] }
-                            })
-                            .then((restaurants) => {
-                                restaurants.map((restaurant) => {
-
-                                    const restaurantId = restaurant._id;
-
-                                    // remove all the user's reference from each restaurant that the user saved
-                                    return db.Restaurant
-                                        .findOneAndUpdate(
-                                            { _id: restaurantId },
-                                            { $pull: { users: userDBId } },
-                                            { new: true }
-                                        )
-                                        .catch((error) => error);
-                                })
-                            })
-                            .then(() => {
-
-                                // delete the user 
-                                return db.User
-                                    .findOneAndDelete({ _id: userDBId })
-                                    .then((dbUser) => dbUser)
-                                    .catch((error) => error);
-                            })
-                            .catch((error) => { ` ${error},Restaurant not found, Register / Login to save it! ` });
-                    })
-                    .catch((error) => { ` ${error}, User not found, Register / Login ` });
+                return axios
+                    .delete(`${SERVER_URL}:${APP_PORT}/api/${API_VERSION}/deleteuser/${args.userId}`)
+                    .then((deletedUser) => deletedUser.data.message)
+                    .catch((error) => error);
             }
         },
         addRestaurant: {
@@ -257,10 +250,8 @@ const Mutation = new GraphQLObjectType({
             },
             resolve(parent, args) {
 
-                // retrieve the userId 
-                const userId = args.userId;
-                const restaurantId = args.restaurantId;
                 const restaurantInfo = {
+                    "userId": args.userId,
                     "restaurantId": args.restaurantId,
                     "businessName": args.businessName,
                     "dbaName": args.dbaName,
@@ -277,59 +268,10 @@ const Mutation = new GraphQLObjectType({
                     "longitude": args.longitude
                 };
 
-                return db.User
-                    .findOne({ userId })
-                    .then((userFound) => {
-
-                        const userDBId = userFound._id;
-
-                        if (userFound !== null) {
-
-                            return db.Restaurant
-                                .findOne({ restaurantId })
-                                .then((restaurantFound) => {
-
-                                    if (!restaurantFound) {
-
-                                        // Add restaurant information into the database
-                                        return db.Restaurant
-                                            .create(restaurantInfo)
-                                            .then((restaurantSaved) => {
-
-                                                const restaurantDBId = restaurantSaved._id;
-
-                                                return addRestToUserAndUserToRestGQL(restaurantDBId, userDBId);
-                                            })
-                                            .catch((error) => error);
-                                    } else {
-                                        // Check if the USER already SAVED the restaurant
-                                        return db.User
-                                            .findOne({ userId: userId })
-                                            .then((userFound) => {
-
-                                                const savedRestaurantId = restaurantFound._id;
-                                                const userDBId = userFound._id;
-                                                const savedRestaurantsByUser = userFound.restaurants;
-                                                const isRestaurantSavedByUser = savedRestaurantsByUser.indexOf(savedRestaurantId) !== -1;
-
-                                                if (!isRestaurantSavedByUser) {
-                                                    // Add the restaurant information into user restaurant saved list
-                                                    return addRestToUserAndUserToRestGQL(savedRestaurantId, userDBId);
-
-                                                } else {
-
-                                                    const errorMessage = `errorMessage: "You already saved the restaurant!`;
-
-                                                    return errorMessage;
-                                                }
-                                            })
-                                            .catch((error) => console.log(`${error}, You need an account to be able to save a resaurant. Register / Login `));
-                                    }
-                                })
-                                .catch((error) => error);
-                        }
-                    })
-                    .catch((error) => console.log(`${error} \nYou need an account to be able to save a resaurant. Register / Login `));
+                return axios
+                    .post(`${SERVER_URL}:${APP_PORT}/api/${API_VERSION}/addrestaurant`, restaurantInfo)
+                    .then((dbRestaurant) => dbRestaurant.data.restaurantUpdated)
+                    .catch((error) => error);
             }
         },
         deleteRestaurant: {
@@ -340,48 +282,11 @@ const Mutation = new GraphQLObjectType({
                     type: GraphQLID
                 }
             },
-            resolve(parents, args) {
-
-                const restaurantId = args.restaurantId;
-
-                return db.Restaurant
-                    .findOne({ restaurantId })
-                    .then((restaurantFound) => {
-
-                        const restaurantDBId = restaurantFound._id;
-
-                        // check all the user that saved the restaurant 
-                        return db.User
-                            .find({
-                                restaurants: { $in: [restaurantDBId] }
-                            })
-                            .then((restaurants) => {
-                                restaurants.map((restaurant) => {
-
-                                    const userDBId = restaurant._id;
-
-                                    // remove all the restaurant's reference from each user that saved it
-                                    return db.User
-                                        .findOneAndUpdate(
-                                            { _id: userDBId },
-                                            { $pull: { restaurants: restaurantDBId } },
-                                            { new: true }
-                                        )
-                                        .catch((error) => error);
-                                })
-                            })
-                            .then(() => {
-
-                                // delete a saved restaurant
-                                return db.Restaurant
-                                    .findOneAndDelete({ _id: restaurantDBId })
-                                    .then((dbRestaurant) => dbRestaurant)
-                                    .catch((error) => error);
-                            })
-                            .catch((error) => error);
-
-                    })
-                    .catch((error) => { `${error}, Restaurant not found, Register / Login to save it! ` });
+            resolve(parent, args) {
+                return axios
+                    .delete(`${SERVER_URL}:${APP_PORT}/api/${API_VERSION}/deleterestaurant/${args.restaurantId}`)
+                    .then((deletedRestaurant) => deletedRestaurant.data.message)
+                    .catch((error) => error);
             }
         }
     }

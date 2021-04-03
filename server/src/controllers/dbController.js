@@ -30,7 +30,7 @@ const dbController = {
 
         // get a specific user information 
         db.User
-            .find({ userId: userId })
+            .findOne({ userId: userId })
             .populate("restaurants", "-__v")
             .then((dbUser) => res.send(dbUser))
             .catch((error) => res.status(500).send(error));
@@ -41,7 +41,7 @@ const dbController = {
 
         // update the user information in the db
         db.User
-            .updateOne({ userId: userInfo.userId }, userInfo, { new: true })
+            .findOneAndUpdate({ userId: userInfo.userId }, userInfo, { new: true })
             .then((dbUser) => res.send(dbUser))
             .catch((error) => res.status(500).send(error));
     },
@@ -54,7 +54,6 @@ const dbController = {
             .then((userFound) => {
 
                 const userDBId = userFound._id;
-                console.log(`userDBId`, userDBId)
                 // check all the student reference's in restaurants 
                 db.Restaurant
                     .find({
@@ -62,7 +61,6 @@ const dbController = {
                     })
                     .then((restaurants) => {
                         restaurants.map((restaurant) => {
-                            console.log(`restaurant`, restaurant)
                             const restaurantId = restaurant._id;
 
                             // remove all the user's reference from each restaurant that the user saved
@@ -161,7 +159,7 @@ const dbController = {
 
         // retrieve information on a saved restaurant
         db.Restaurant
-            .find({ restaurantId: restaurantId })
+            .findOne({ restaurantId: restaurantId })
             .populate("users")
             .then((dbRestaurant) => res.send(dbRestaurant))
             .catch((error) => res.status(500).send(error));

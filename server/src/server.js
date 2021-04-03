@@ -9,8 +9,7 @@ const cors = require("cors");
 // global variables 
 const schema = require("./schema/");
 const routes = require("./routes");
-const mongoDBUrl = process.env.MONGODB_URI;
-const PORT = process.env.PORT;
+const { APP_PORT, MONGODB_URL } = require("./config");
 
 // initialize express 
 const app = express();
@@ -34,12 +33,12 @@ app.use("/graphql", graphqlHTTP({
 }));
 
 // connect to our MongoDB database 
-mongoose.connect(mongoDBUrl, {
+mongoose.connect(MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
     useFindAndModify: false
 })
-    .then(() => app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`)))
+    .then(() => app.listen(APP_PORT, () => console.log(`Server is listening on port ${APP_PORT}`)))
     .catch((error) => console.log(error));
 
