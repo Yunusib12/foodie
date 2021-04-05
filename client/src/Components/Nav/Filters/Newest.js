@@ -19,8 +19,8 @@ const useStyles = makeStyles((theme) => ({
 
 const ChoicesArray = [
     {
-        value: 'Closets',
-        label: 'Closets',
+        value: 'NEWEST',
+        label: 'NEWEST',
     },
 ];
 
@@ -37,9 +37,9 @@ function Newest() {
         <form className={classes.root} noValidate autoComplete="off">
             <div>
                 <TextField
-                    id="newest"
+                    id="closest"
                     select
-                    label="Newest"
+                    label="CLOSEST"
                     value={newest}
                     onChange={handleChange}
                 >
