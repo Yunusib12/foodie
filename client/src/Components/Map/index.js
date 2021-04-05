@@ -19,7 +19,6 @@ function RestaurantMap() {
     return (
         <div className={classes.mapCard}>
             <img
-                width="100%"
                 src={MapRestaurants}
                 alt="Boston Restaurants" />
         </div>

@@ -24,7 +24,7 @@ function Filters() {
         <div className={classes.filterContainer} >
             <DishesDrinks />
             <Newest />
-            <IconButton color="primary" aria-label="Reset search" style={{ position: "absolute", right: "0px" }}>
+            <IconButton color="primary" aria-label="Reset search" >
                 <RotateLeftRoundedIcon fontSize="large" />
             </IconButton>
         </div>
