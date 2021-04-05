@@ -1,17 +1,30 @@
 import React from 'react'
-import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import PizzaBoyImage from "../../assets/images/pizza-boy.png";
+import Cities from './Filters/Cities';
 
 
 
 const useStyles = makeStyles((theme) => ({
     navTitleSection: {
         display: "flex",
-        marginTop: "0.35rem",
         marginLeft: " 3.5rem",
-        marginBottom: "0.8rem",
         alignItems: "center",
+    },
+    PizzaBoyText: {
+        fontFamily: "Oswald",
+        fontWeight: 600,
+        fontSize: "3.6rem",
+        [theme.breakpoints.down('sm')]: {
+            fontSize: "25px",
+        }
+
+    },
+    pizzaBoy: {
+        height: "100px",
+        // [theme.breakpoints.down('sm')]: {
+        //     paddingRight: "5px",
+        // }
     }
 }));
 
@@ -23,11 +36,12 @@ function PizzaBoy() {
     return (
         <div className={classes.navTitleSection}>
             <div>
-                <img src={PizzaBoyImage} alt="Foodie - Pizza Boy" style={{ height: "100px" }} />
+                <img src={PizzaBoyImage} alt="Foodie - Pizza Boy" className={classes.pizzaBoy} />
             </div>
-            <Typography variant="h3">
-                Find your happy place <span style={{ fontSize: "30px", fontWeight: "100" }}>in</span> <span style={{ fontSize: "47px", fontWeight: "600", boxShadow: "inset 0 -2px 0 0 #fdd0cf", borderBottom: "1px solid #000000" }}>Boston</span>
-            </Typography>
+            <h3 className={classes.PizzaBoyText}>
+                Find your happy place <span style={{ fontSize: "30px", fontWeight: "100" }}>in</span>
+            </h3>
+            <Cities />
         </div>
     )
 }

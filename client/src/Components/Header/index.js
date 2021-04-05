@@ -11,9 +11,6 @@ const useStyles = makeStyles((theme) => ({
         height: "4.5rem",
         backgroundColor: "#292a2a",
     },
-    mainHeader: {
-        flex: 1,
-    },
 }));
 
 function Header() {

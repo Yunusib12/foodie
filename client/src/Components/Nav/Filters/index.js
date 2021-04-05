@@ -1,14 +1,17 @@
 import React from 'react'
 import { makeStyles } from "@material-ui/core/styles";
+import RotateLeftRoundedIcon from '@material-ui/icons/RotateLeftRounded';
+import { IconButton } from '@material-ui/core';
 import DishesDrinks from './DishesDrinks';
-import Cities from "./Cities";
+import Newest from './Newest';
 
 
 const useStyles = makeStyles((theme) => ({
     filterContainer: {
         display: "flex",
+
         marginLeft: "3rem",
-    }
+    },
 }));
 
 
@@ -20,7 +23,10 @@ function Filters() {
     return (
         <div className={classes.filterContainer} >
             <DishesDrinks />
-            <Cities />
+            <Newest />
+            <IconButton color="primary" aria-label="Reset search" style={{ position: "absolute", right: "0px" }}>
+                <RotateLeftRoundedIcon fontSize="large" />
+            </IconButton>
         </div>
     )
 }

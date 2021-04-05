@@ -2,15 +2,6 @@ import React, { useState } from "react";
 import { makeStyles, TextField } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        '& .MuiTextField-root': {
-            margin: theme.spacing(1),
-            width: '18ch',
-        },
-    }
-}));
-
 
 const ChoicesArray = [
     {
@@ -40,6 +31,35 @@ const ChoicesArray = [
 ];
 
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            width: '18ch',
+        },
+        '& .MuiInputBase-root': {
+            marginTop: "20px",
+            fontSize: "43px",
+            fontWeight: "600",
+            width: "fit-content",
+            boxShadow: "inset 0 -2px 0 0 #fdd0cf",
+            borderBottom: "1px solid #000000",
+        },
+        '& .MuiFormControl-root': {
+            [theme.breakpoints.down('sm')]: {
+                // backgroundColor: "green",
+                width: '100%',
+            }
+        },
+        marginLeft: "0.5rem",
+    },
+    selectCity: {
+        fontSize: "47px",
+    }
+}));
+
+
+
 function Cities() {
 
     const classes = useStyles();
@@ -54,14 +74,15 @@ function Cities() {
         <form className={classes.root} noValidate autoComplete="off">
             <div>
                 <TextField
-                    id="standard-select-currency"
+                    id="city"
                     select
-                    label="Select your City"
                     value={city}
                     onChange={handleChange}
                 >
                     {ChoicesArray.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
+                        <MenuItem
+                            key={option.value}
+                            value={option.value}>
                             {option.label}
                         </MenuItem>
                     ))}

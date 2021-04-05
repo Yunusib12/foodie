@@ -11,14 +11,14 @@ const theme = createMuiTheme({
             white: teal[500]
         }
     },
-    typography: {
-        h3: {
-            fontFamily: "Oswald",
-            fontSize: "3.6rem",
-            textTransform: "uppercase",
-            letterSpacing: "-0.8px",
-        }
-    }
+    // typography: {
+    //     h3: {
+    //         fontFamily: "Oswald",
+    //         fontSize: "3.6rem",
+    //         textTransform: "uppercase",
+    //         letterSpacing: "-0.8px",
+    //     },
+    // }
 
 });
 

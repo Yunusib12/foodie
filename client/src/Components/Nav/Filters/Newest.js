@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { makeStyles, TextField } from "@material-ui/core";
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -13,33 +13,28 @@ const useStyles = makeStyles((theme) => ({
 
 const ChoicesArray = [
     {
-        value: 'Dishes',
-        label: 'Dishes',
-    },
-    {
-        value: 'Drinks',
-        label: 'Drinks',
+        value: 'Closets',
+        label: 'Closets',
     },
 ];
 
-function DishesDrinks() {
+function Newest() {
 
     const classes = useStyles();
-
-    const [dishesDrinks, setDishesDrinks] = React.useState('EUR');
+    const [newest, setNewest] = React.useState('N/A');
 
     const handleChange = (event) => {
-        setDishesDrinks(event.target.value);
+        setNewest(event.target.value);
     };
 
     return (
         <form className={classes.root} noValidate autoComplete="off">
             <div>
                 <TextField
-                    id="dishesDrinks"
+                    id="newest"
                     select
-                    label="Dishes and Drinks"
-                    value={dishesDrinks}
+                    label="Newest"
+                    value={newest}
                     onChange={handleChange}
                 >
                     {ChoicesArray.map((option) => (
@@ -53,4 +48,4 @@ function DishesDrinks() {
     )
 }
 
-export default DishesDrinks
+export default Newest
