@@ -8,6 +8,12 @@ const useStyles = makeStyles((theme) => ({
             margin: theme.spacing(1),
             width: '18ch',
         },
+        '& .MuiInputLabel-root': {
+            color: "#000",
+            fontSize: "14px",
+            fontWeight: "600",
+            textTransform: "uppercase",
+        },
     }
 }));
 
